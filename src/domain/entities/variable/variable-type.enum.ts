@@ -1,0 +1,5 @@
+export enum VariableType {
+  NUMERIC = 'NUMERIC',
+  MULTIVALUED = 'MULTIVALUED',
+  UNIVALUED = 'UNIVALUED',
+}
