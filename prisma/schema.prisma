@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Base {
+  id    Int    @id @default(autoincrement())
+  name  String
+  rules Rule[]
+
+  @@map("base")
+}
+
+model Condition {
+  id         Int      @id @default(autoincrement())
+  variable   Variable @relation(fields: [variableId], references: [id])
+  value      Value    @relation(fields: [valueId], references: [id])
+  connective String
+  valueId    Int
+  variableId Int
+
+  @@map("condition")
+}
+
+model Value {
+  id        Int         @id @default(autoincrement())
+  value     String
+  Condition Condition[]
+
+  @@map("value")
+}
+
+model Rule {
+  id     Int    @id @default(autoincrement())
+  name   String
+  order  Int
+  Base   Base?  @relation(fields: [baseId], references: [id])
+  baseId Int?
+
+  @@map("rule")
+}
+
+model Variable {
+  id        Int         @id @default(autoincrement())
+  name      String
+  type      String
+  Condition Condition[]
+
+  @@map("variable")
+}

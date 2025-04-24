@@ -1,7 +1,9 @@
-export class Base {
-  private constructor(readonly name: string) {}
+import { Rule } from "../rule/rule.entity";
 
-  public static create(name: string) {
-    return new Base(name);
+export class Base {
+  private constructor(readonly name: string, readonly rules: Rule[]) {}
+
+  public static create(name: string, rules: Rule[]) {
+    return new Base(name, rules);
   }
 }
