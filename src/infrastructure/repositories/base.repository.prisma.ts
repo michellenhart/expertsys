@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { UUID } from "crypto";
 import { Base } from "src/domain/entities/base/base.entity";
-import { DefaultRepository } from "src/domain/repositories/default.repository";
+import { BaseRepository } from "src/domain/repositories/base.repository";
 
-export class BaseRepositoryPrisma implements DefaultRepository<Base> {
+export class BaseRepositoryPrisma implements BaseRepository {
   private constructor(private readonly prismaClient: PrismaClient){};
 
   public static create(prismaClient: PrismaClient){

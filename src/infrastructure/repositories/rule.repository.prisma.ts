@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { UUID } from "crypto";
 import { Rule } from "src/domain/entities/rule/rule.entity";
-import { DefaultRepository } from "src/domain/repositories/default.repository";
+import { RuleRepository } from "src/domain/repositories/rule.repository";
 
-export class RuleRepositoryPrisma implements DefaultRepository<Rule> {
+export class RuleRepositoryPrisma implements RuleRepository {
   private constructor(private readonly prismaClient: PrismaClient){};
 
   public static create(prismaClient: PrismaClient){
@@ -27,5 +28,14 @@ export class RuleRepositoryPrisma implements DefaultRepository<Rule> {
     })
 
     return ruleList;
+  }
+
+  public async findById(id: UUID): Promise<Rule> {
+    const rule = this.prismaClient.rule.findById(id);
+
+    if (!rule)
+      throw new Error("Regra não encontrada!");
+
+    return Rule.with(rule.id, rule.name, rule.order);
   }
 }

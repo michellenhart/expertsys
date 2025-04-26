@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { UUID } from "crypto";
 import { Condition } from "src/domain/entities/condition/condition.entity";
-import { DefaultRepository } from "src/domain/repositories/default.repository";
+import { ConditionRepository } from "src/domain/repositories/condition.repository";
 
-export class ConditionRepositoryPrisma implements DefaultRepository<Condition> {
+export class ConditionRepositoryPrisma implements ConditionRepository {
   private constructor(private readonly prismaClient: PrismaClient){};
 
   public static create(prismaClient: PrismaClient){
@@ -33,7 +33,7 @@ export class ConditionRepositoryPrisma implements DefaultRepository<Condition> {
   }
 
   public async findById(id: UUID): Promise<Condition> {
-    const condition = this.prismaClient.base.findById(id);
+    const condition = this.prismaClient.condition.findById(id);
 
     if (!condition)
       throw new Error("Condição não encontrada!");

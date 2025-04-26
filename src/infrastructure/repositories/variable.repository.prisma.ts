@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { UUID } from "crypto";
 import { Variable } from "src/domain/entities/variable/variable.entity";
-import { DefaultRepository } from "src/domain/repositories/default.repository";
+import { VariableRepository } from "src/domain/repositories/variable.repository";
 
-export class VariableRepositoryPrisma implements DefaultRepository<Variable> {
+export class VariableRepositoryPrisma implements VariableRepository {
   private constructor(private readonly prismaClient: PrismaClient){};
 
   public static create(prismaClient: PrismaClient){
@@ -27,5 +28,14 @@ export class VariableRepositoryPrisma implements DefaultRepository<Variable> {
     })
 
     return variableList;
+  }
+
+  public async findById(id: UUID): Promise<Variable> {
+    const variable = this.prismaClient.variable.findById(id);
+
+    if (!variable)
+      throw new Error("Variável não encontrada!");
+
+    return Variable.with(variable.id, variable.name, variable.type);
   }
 }

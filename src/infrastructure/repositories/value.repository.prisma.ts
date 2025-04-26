@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { UUID } from "crypto";
 import { Value } from "src/domain/entities/value/value.entity";
-import { DefaultRepository } from "src/domain/repositories/default.repository";
+import { ValueRepository } from "src/domain/repositories/value.repository";
 
-export class ValueRepositoryPrisma implements DefaultRepository<Value> {
+export class ValueRepositoryPrisma implements ValueRepository {
   private constructor(private readonly prismaClient: PrismaClient){};
 
   public static create(prismaClient: PrismaClient){
@@ -26,5 +27,14 @@ export class ValueRepositoryPrisma implements DefaultRepository<Value> {
     })
 
     return valueList;
+  }
+
+  public async findById(id: UUID): Promise<Value> {
+    const value = this.prismaClient.value.findById(id);
+
+    if (!value)
+      throw new Error("Valor não encontrada!");
+
+    return Value.with(value.id, value.value);
   }
 }
