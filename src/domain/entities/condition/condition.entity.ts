@@ -1,3 +1,4 @@
+import { UUID } from "crypto";
 import { Value } from "../value/value.entity";
 import { Variable } from "../variable/variable.entity";
 import { ConditionConnective } from "./condition-connective.enum";
@@ -5,6 +6,7 @@ import { ConditionOperator } from "./condition-operator.enum";
 
 export class Condition {
   private constructor(
+    readonly id: UUID,
     readonly variable: Variable,
     readonly operator: ConditionOperator,
     readonly value: Value,
@@ -17,7 +19,16 @@ export class Condition {
     value: Value,
     connective: ConditionConnective
   ) {
-    return new Condition(variable, operator, value, connective);
+    return new Condition(crypto.randomUUID(), variable, operator, value, connective);
   }
+
+  public static with(
+    id: UUID,
+    variable: Variable,
+    operator: ConditionOperator,
+    value: Value,
+    connective: ConditionConnective) {
+      return new Condition(id, variable, operator, value, connective); 
+    }
 }
 
