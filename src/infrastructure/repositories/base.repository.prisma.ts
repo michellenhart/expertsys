@@ -33,9 +33,6 @@ export class BaseRepositoryPrisma implements BaseRepository {
   public async findById(id: UUID): Promise<Base> {
     const base = this.prismaClient.base.findById(id);
 
-    if (!base)
-      throw new Error("Base não encontrada!");
-
     return Base.with(base.id, base.name, base.rules);
   }
 }

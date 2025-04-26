@@ -33,9 +33,6 @@ export class RuleRepositoryPrisma implements RuleRepository {
   public async findById(id: UUID): Promise<Rule> {
     const rule = this.prismaClient.rule.findById(id);
 
-    if (!rule)
-      throw new Error("Regra não encontrada!");
-
     return Rule.with(rule.id, rule.name, rule.order);
   }
 }

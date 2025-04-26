@@ -35,9 +35,6 @@ export class ConditionRepositoryPrisma implements ConditionRepository {
   public async findById(id: UUID): Promise<Condition> {
     const condition = this.prismaClient.condition.findById(id);
 
-    if (!condition)
-      throw new Error("Condição não encontrada!");
-
     return Condition.with(condition.id, condition.variable, condition.operator, condition.value, condition.connective);
   }
 }

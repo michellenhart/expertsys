@@ -32,9 +32,6 @@ export class ValueRepositoryPrisma implements ValueRepository {
   public async findById(id: UUID): Promise<Value> {
     const value = this.prismaClient.value.findById(id);
 
-    if (!value)
-      throw new Error("Valor não encontrada!");
-
     return Value.with(value.id, value.value);
   }
 }

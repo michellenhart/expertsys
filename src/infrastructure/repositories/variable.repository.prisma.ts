@@ -33,9 +33,6 @@ export class VariableRepositoryPrisma implements VariableRepository {
   public async findById(id: UUID): Promise<Variable> {
     const variable = this.prismaClient.variable.findById(id);
 
-    if (!variable)
-      throw new Error("Variável não encontrada!");
-
     return Variable.with(variable.id, variable.name, variable.type);
   }
 }
