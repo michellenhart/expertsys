@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Base {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(uuid()) @db.Uuid
   name  String
   rules Rule[]
 
@@ -23,18 +23,18 @@ model Base {
 }
 
 model Condition {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid()) @db.Uuid
   variable   Variable @relation(fields: [variableId], references: [id])
   value      Value    @relation(fields: [valueId], references: [id])
   connective String
-  valueId    Int
-  variableId Int
+  variableId String   @db.Uuid
+  valueId    String   @db.Uuid
 
   @@map("condition")
 }
 
 model Value {
-  id        Int         @id @default(autoincrement())
+  id        String      @id @default(uuid()) @db.Uuid
   value     String
   Condition Condition[]
 
@@ -42,17 +42,17 @@ model Value {
 }
 
 model Rule {
-  id     Int    @id @default(autoincrement())
+  id     String  @id @default(uuid()) @db.Uuid
   name   String
   order  Int
-  Base   Base?  @relation(fields: [baseId], references: [id])
-  baseId Int?
+  Base   Base?   @relation(fields: [baseId], references: [id])
+  baseId String? @db.Uuid
 
   @@map("rule")
 }
 
 model Variable {
-  id        Int         @id @default(autoincrement())
+  id        String      @id @default(uuid()) @db.Uuid
   name      String
   type      String
   Condition Condition[]
