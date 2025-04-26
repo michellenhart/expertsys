@@ -1,4 +1,5 @@
 import { UUID } from "crypto";
+import { Rule } from "../rule/rule.entity";
 import { Value } from "../value/value.entity";
 import { Variable } from "../variable/variable.entity";
 import { ConditionConnective } from "./condition-connective.enum";
@@ -10,25 +11,16 @@ export class Condition {
     readonly variable: Variable,
     readonly operator: ConditionOperator,
     readonly value: Value,
-    readonly connective: ConditionConnective
+    readonly connective: ConditionConnective,
+    readonly rule: Rule
   ) {}
 
-  public static create(
-    variable: Variable,
-    operator: ConditionOperator,
-    value: Value,
-    connective: ConditionConnective
-  ) {
-    return new Condition(crypto.randomUUID(), variable, operator, value, connective);
+  public static create(variable: Variable, operator: ConditionOperator, value: Value, connective: ConditionConnective, rule: Rule) {
+    return new Condition(crypto.randomUUID(), variable, operator, value, connective, rule);
   }
 
-  public static with(
-    id: UUID,
-    variable: Variable,
-    operator: ConditionOperator,
-    value: Value,
-    connective: ConditionConnective) {
-      return new Condition(id, variable, operator, value, connective); 
+  public static with(id: UUID, variable: Variable, operator: ConditionOperator, value: Value, connective: ConditionConnective, rule: Rule) {
+      return new Condition(id, variable, operator, value, connective, rule); 
     }
 }
 

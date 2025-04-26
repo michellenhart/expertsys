@@ -15,9 +15,10 @@ datasource db {
 }
 
 model Base {
-  id    String @id @default(uuid()) @db.Uuid
-  name  String
-  rules Rule[]
+  id       String     @id @default(uuid()) @db.Uuid
+  name     String
+  rules    Rule[]
+  Variable Variable[]
 
   @@map("base")
 }
@@ -27,26 +28,31 @@ model Condition {
   variable   Variable @relation(fields: [variableId], references: [id])
   value      Value    @relation(fields: [valueId], references: [id])
   connective String
+  rule       Rule     @relation(fields: [ruleId], references: [id])
   variableId String   @db.Uuid
   valueId    String   @db.Uuid
+  ruleId     String   @db.Uuid
 
   @@map("condition")
 }
 
 model Value {
-  id        String      @id @default(uuid()) @db.Uuid
-  value     String
-  Condition Condition[]
+  id         String      @id @default(uuid()) @db.Uuid
+  value      String
+  variable   Variable    @relation(fields: [variableId], references: [id])
+  variableId String      @db.Uuid
+  Condition  Condition[]
 
   @@map("value")
 }
 
 model Rule {
-  id     String  @id @default(uuid()) @db.Uuid
-  name   String
-  order  Int
-  Base   Base?   @relation(fields: [baseId], references: [id])
-  baseId String? @db.Uuid
+  id        String      @id @default(uuid()) @db.Uuid
+  name      String
+  order     Int
+  Base      Base?       @relation(fields: [baseId], references: [id])
+  baseId    String?     @db.Uuid
+  Condition Condition[]
 
   @@map("rule")
 }
@@ -55,7 +61,10 @@ model Variable {
   id        String      @id @default(uuid()) @db.Uuid
   name      String
   type      String
+  base      Base        @relation(fields: [baseId], references: [id])
+  baseId    String      @db.Uuid
   Condition Condition[]
+  Value     Value[]
 
   @@map("variable")
 }
