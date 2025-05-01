@@ -1,16 +1,10 @@
 import { UUID } from "crypto";
 import { Rule } from "../rule/rule.entity";
 
-export type BaseProps = {
-  id: UUID;
-  name: String;
-  rules: Rule[];
-}
-
 export class Base {
   private constructor(
     readonly id: UUID, 
-    readonly name: String, 
+    readonly name: string, 
     readonly rules: Rule[]
   ) {}
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CreateBaseInputDto, CreateBaseUsecase } from "src/usecase/base/create-base.usecase";
-import { CreateOutputDto } from "src/usecase/create-output-dto";
+import { CreateBaseInputDto, CreateBaseUsecase } from "src/application/usecase/base/create-base.usecase";
+import { CreateOutputDto } from "src/application/usecase/create-output-dto";
 import { HttpMethod, Route } from "../route";
 
 export class CreateBaseRoute implements Route {
