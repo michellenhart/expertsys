@@ -26,7 +26,7 @@ export class ConditionRepositoryPrisma implements ConditionRepository {
     const conditions = this.prismaClient.condition.findMany();
 
     const conditionList = conditions.map((c) => {
-      return Condition.with(c.id, c.variable, c.operator, c.value, c.connective)
+      return Condition.with(c.id, c.variable, c.operator, c.value, c.connective, c.rule)
     })
 
     return conditionList;
@@ -35,6 +35,6 @@ export class ConditionRepositoryPrisma implements ConditionRepository {
   public async findById(id: UUID): Promise<Condition> {
     const condition = this.prismaClient.condition.findById(id);
 
-    return Condition.with(condition.id, condition.variable, condition.operator, condition.value, condition.connective);
+    return Condition.with(condition.id, condition.variable, condition.operator, condition.value, condition.connective, condition.rule);
   }
 }

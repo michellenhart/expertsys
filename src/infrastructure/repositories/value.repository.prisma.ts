@@ -23,7 +23,7 @@ export class ValueRepositoryPrisma implements ValueRepository {
     const values = this.prismaClient.value.findMany();
 
     const valueList = values.map((v) => {
-      return Value.with(v.id, v.value)
+      return Value.with(v.id, v.value, v.variable)
     })
 
     return valueList;
@@ -32,6 +32,6 @@ export class ValueRepositoryPrisma implements ValueRepository {
   public async findById(id: UUID): Promise<Value> {
     const value = this.prismaClient.value.findById(id);
 
-    return Value.with(value.id, value.value);
+    return Value.with(value.id, value.value, value.variable);
   }
 }

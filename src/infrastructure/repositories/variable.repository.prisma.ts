@@ -24,7 +24,7 @@ export class VariableRepositoryPrisma implements VariableRepository {
     const variables = this.prismaClient.variable.findMany();
 
     const variableList = variables.map((v) => {
-      return Variable.with(v.id, v.name, v.type)
+      return Variable.with(v.id, v.name, v.type, v.base)
     })
 
     return variableList;
@@ -33,6 +33,6 @@ export class VariableRepositoryPrisma implements VariableRepository {
   public async findById(id: UUID): Promise<Variable> {
     const variable = this.prismaClient.variable.findById(id);
 
-    return Variable.with(variable.id, variable.name, variable.type);
+    return Variable.with(variable.id, variable.name, variable.type, variable.base);
   }
 }

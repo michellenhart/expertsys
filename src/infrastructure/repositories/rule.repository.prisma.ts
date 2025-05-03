@@ -24,7 +24,7 @@ export class RuleRepositoryPrisma implements RuleRepository {
     const rules = this.prismaClient.rule.findMany();
 
     const ruleList = rules.map((r) => {
-      return Rule.with(r.id, r.name, r.order)
+      return Rule.with(r.id, r.name, r.order, r.base)
     })
 
     return ruleList;
@@ -33,6 +33,6 @@ export class RuleRepositoryPrisma implements RuleRepository {
   public async findById(id: UUID): Promise<Rule> {
     const rule = this.prismaClient.rule.findById(id);
 
-    return Rule.with(rule.id, rule.name, rule.order);
+    return Rule.with(rule.id, rule.name, rule.order, rule.base);
   }
 }
