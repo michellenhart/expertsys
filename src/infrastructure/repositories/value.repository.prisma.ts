@@ -1,32 +1,46 @@
 import { PrismaClient } from "@prisma/client";
 import { UUID } from "crypto";
 import { Value } from "src/domain/entities/value/value.entity";
-import { VariableType } from "src/domain/entities/variable/variable-type.enum";
-import { Variable } from "src/domain/entities/variable/variable.entity";
-import { BaseMapper } from "src/domain/mappers/base-mapper";
+import { VariableMapper } from "src/domain/mappers/variable-mapper";
 import { ValueRepository } from "src/domain/repositories/value.repository";
 
 export class ValueRepositoryPrisma implements ValueRepository {
-  private constructor(private readonly prismaClient: PrismaClient, private readonly baseMapper: BaseMapper){};
+  private constructor(private readonly prismaClient: PrismaClient, private readonly variableMapper: VariableMapper){};
 
-  public static create(prismaClient: PrismaClient, baseMapper: BaseMapper){
-    return new ValueRepositoryPrisma(prismaClient, baseMapper);
+  public static create(prismaClient: PrismaClient, variableMapper: VariableMapper){
+    return new ValueRepositoryPrisma(prismaClient, variableMapper);
   }
 
   public async save(entity: Value): Promise<Value> {
     const data = {
       id: entity.id,
       value: entity.value,
+      variableId: entity.variable.id,
     }
 
-    return await this.prismaClient.value.create(data);
+    await this.prismaClient.value.create({
+      data,
+      include: {
+        variable: true,
+      }
+    });
+
+    return entity;
   }
   
   public async findAll(): Promise<Value[]> {
-    const values = this.prismaClient.value.findMany();
+    const values = await this.prismaClient.value.findMany({
+      include: {
+        variable: {
+          include: {
+            base: true,
+          }
+        },
+      }
+    });
 
     const valueList = values.map((v) => {
-      return Value.with(v.id, v.value, v.variable)
+      return Value.with(v.id, v.value, this.variableMapper.fromDatabase(v.variable))
     })
 
     return valueList;
@@ -49,6 +63,6 @@ export class ValueRepositoryPrisma implements ValueRepository {
     if (!value)
       return null;
 
-    return Value.with(value.id, value.value, Variable.with(value.variable.id, value.variable.name, value.variable.type as VariableType, this.baseMapper.fromDatabase(value.variable.base)));
+    return Value.with(value.id, value.value, this.variableMapper.fromDatabase(value.variable));
   }
 }

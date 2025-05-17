@@ -1,4 +1,3 @@
-
 export class Base {
   private constructor(
     readonly id: string, 

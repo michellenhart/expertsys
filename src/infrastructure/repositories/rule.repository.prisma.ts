@@ -17,11 +17,13 @@ export class RuleRepositoryPrisma implements RuleRepository {
       order: entity.order,
     }
 
-    return await this.prismaClient.rule.create(data);
+    await this.prismaClient.rule.create({data});
+
+    return entity;
   }
   
   public async findAll(): Promise<Rule[]> {
-    const rules = this.prismaClient.rule.findMany();
+    const rules = await this.prismaClient.rule.findMany();
 
     const ruleList = rules.map((r) => {
       return Rule.with(r.id, r.name, r.order, r.base)
@@ -31,7 +33,7 @@ export class RuleRepositoryPrisma implements RuleRepository {
   }
 
   public async findById(id: UUID): Promise<Rule> {
-    const rule = this.prismaClient.rule.findById(id);
+    const rule = await this.prismaClient.rule.findById(id);
 
     return Rule.with(rule.id, rule.name, rule.order, rule.base);
   }
