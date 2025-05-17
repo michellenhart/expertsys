@@ -10,7 +10,7 @@ export type CreateValueInputDto = {
   variableId: UUID
 }
 
-export class CreateRuleUsecase implements Usecase<CreateValueInputDto, CreateOutputDto> {
+export class CreateValueUsecase implements Usecase<CreateValueInputDto, CreateOutputDto> {
 
   private constructor(
     private valueRepository: ValueRepository, 
@@ -18,7 +18,7 @@ export class CreateRuleUsecase implements Usecase<CreateValueInputDto, CreateOut
   ) {};
 
   public static create(valueRepository: ValueRepository, variableRepository: VariableRepository) {
-    return new CreateRuleUsecase(valueRepository, variableRepository);
+    return new CreateValueUsecase(valueRepository, variableRepository);
   }
 
   public async execute({value, variableId}: CreateValueInputDto): Promise<CreateOutputDto> {

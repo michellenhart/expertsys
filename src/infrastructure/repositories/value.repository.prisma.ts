@@ -1,19 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 import { UUID } from "crypto";
 import { Value } from "src/domain/entities/value/value.entity";
+import { VariableType } from "src/domain/entities/variable/variable-type.enum";
+import { Variable } from "src/domain/entities/variable/variable.entity";
+import { BaseMapper } from "src/domain/mappers/base-mapper";
 import { ValueRepository } from "src/domain/repositories/value.repository";
 
 export class ValueRepositoryPrisma implements ValueRepository {
-  private constructor(private readonly prismaClient: PrismaClient){};
+  private constructor(private readonly prismaClient: PrismaClient, private readonly baseMapper: BaseMapper){};
 
-  public static create(prismaClient: PrismaClient){
-    return new ValueRepositoryPrisma(prismaClient);
+  public static create(prismaClient: PrismaClient, baseMapper: BaseMapper){
+    return new ValueRepositoryPrisma(prismaClient, baseMapper);
   }
 
   public async save(entity: Value): Promise<Value> {
     const data = {
       id: entity.id,
-      value: entity.value
+      value: entity.value,
     }
 
     return await this.prismaClient.value.create(data);
@@ -29,9 +32,23 @@ export class ValueRepositoryPrisma implements ValueRepository {
     return valueList;
   }
 
-  public async findById(id: UUID): Promise<Value> {
-    const value = this.prismaClient.value.findById(id);
+  public async findById(id: UUID): Promise<Value | null> {
+    const value = await this.prismaClient.value.findUnique({
+      where: {
+        id
+      },
+      include: {
+        variable: {
+          include: {
+            base: true
+          }
+        }  
+      }
+    });
 
-    return Value.with(value.id, value.value, value.variable);
+    if (!value)
+      return null;
+
+    return Value.with(value.id, value.value, Variable.with(value.variable.id, value.variable.name, value.variable.type as VariableType, this.baseMapper.fromDatabase(value.variable.base)));
   }
 }

@@ -7,7 +7,12 @@ export class ApiExpress implements Api {
 
   private constructor(routes: Route[]) {
     this.app = express();
-    this.app.use(express.json())
+    this.app.use(express.json());
+    this.addRoutes(routes);
+  }
+
+  public static create(routes: Route[]) {
+    return new ApiExpress(routes);
   }
 
   private addRoutes(routes: Route[]) {
@@ -17,7 +22,7 @@ export class ApiExpress implements Api {
       const handler = route.getHandler();
 
       this.app[method](path, handler);
-    })
+    });
   }
 
   start(portNumber: number): void {
@@ -28,7 +33,7 @@ export class ApiExpress implements Api {
   }
 
   private listRoutes() {
-    const routes = this.app._router.stack
+    const routes = this.app._router?.stack || []
       .filter((route: any) => route.route)
       .map((route: any) => {
         return {
